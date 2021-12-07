@@ -1,11 +1,12 @@
+#imports Flask
 from flask import Flask
 from flask.globals import request
 from flask.wrappers import Response
+#imports bibliothèques manipulation données
 import joblib
 import pandas as pd
 
 #chargement modèle
-#test
 model = joblib.load('modele.sav')
 
 #chargement dataset
