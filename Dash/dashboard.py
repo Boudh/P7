@@ -43,8 +43,6 @@ def distplots(data,var,height=600):
     return plot
 
 #chargement des données
-#chargement du modèle
-model = joblib.load('modele.sav')
 #chargement de l'explainer SHAP
 explainer = joblib.load('explainer.sav')
 #chargement des fichiers de travail
@@ -76,10 +74,10 @@ proba_pred = predict['predictions']
 #Affichage Crédit accepté/refusé
 texte = "Loan for client ID : "+identif
 if proba_pred < 0.52:
-    texte = texte + "<span style='color:green;font-size:20px;'> APPROVED </span>"
+    texte = texte + "  ---> <span style='color:green;font-size:20px;'> APPROVED </span>"
     st.write(texte,unsafe_allow_html=True)
 else:
-    texte = texte + "<span style='color:red;font-size:20px;'> REFUSED </span>"
+    texte = texte + "  ---> <span style='color:red;font-size:20px;'> REFUSED </span>"
     st.write(texte,unsafe_allow_html=True)
 
 #jauge de score de risque
@@ -100,12 +98,17 @@ fig = go.Figure(go.Indicator(
 
 st.plotly_chart(fig, use_container_width=True)
 
+#affichage des informations détaillée du client sélectionné
+with st.expander("Detailed customer information :"):
+    st.write(clients.loc[id_client])
+
 #récupération des shap_values de notre échantillon
 shap_values = explainer(clients)
 shap_base = shap_values.base_values.mean()
 
 #index de l'ID client renseigné
 idx = clients.index.get_loc(id_client)
+
 
 #feature importance locale
 waterfall = shap.plots.waterfall(shap_values[idx])
